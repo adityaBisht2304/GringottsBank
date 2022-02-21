@@ -3,7 +3,7 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
 
 # Access Instructions
 1. Make clone of this repository by using command "git clone https://github.com/adityaBisht2304/GringottsBank.git". It will copy the code in a local folder.
-2. Go to folder "ReositoryLocalFolderPath/GringottsBank/" and open "GringottsBank.sln" in Visual Studio 2019
+2. Go to folder "RepositoryLocalFolderPath/GringottsBank/" and open "GringottsBank.sln" in Visual Studio 2019
 3. Build the solution and run GringottsBank.exe from path "ReositoryLocalFolderPath/GringottsBank/bin/Debug/net5.0"
 4. It will open up the Swagger UI with all the APIs available accross different REST Endpoints. Run the following APIs in sequence for authentication
    1. POST /v1/api/Customer/register 
