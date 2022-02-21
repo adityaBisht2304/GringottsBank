@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace GringottsBank.Models
+{
+    public class NewTransaction
+    {
+        [Required]
+        public int TransactionAmount { get; set; }
+
+        [Required]
+        public int AccountID { get; set; }
+    }
+}
