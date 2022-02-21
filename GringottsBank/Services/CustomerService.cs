@@ -68,7 +68,7 @@ namespace GringottsBank.Services
             return customers;
         }
 
-        public async Task<Customer> GetCustomerByID(int? id)
+        public async Task<Customer> GetCustomerByID(int id)
         {
             var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.ID == id);
             if (customer == null)

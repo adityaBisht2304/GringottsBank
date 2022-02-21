@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace GringottsBank.Models
 {
-    public class RegisterAccount
+    public class NewTransaction
     {
         [Required]
-        public AccountType AccountType { get; set; }
+        public int TransactionAmount { get; set; }
 
         [Required]
-        public int CustomerID { get; set; }
+        public int AccountID { get; set; }
     }
 }

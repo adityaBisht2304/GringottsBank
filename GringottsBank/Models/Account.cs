@@ -17,10 +17,14 @@ namespace GringottsBank.Models
     public class Account
     {
         [Key]
-        public int ID { get; set; }        
+        public int ID { get; set; }     
+        
         public long AccountNumber { get; set; }
+
         public AccountType AccountType { get; set; }
+
         public int AccountBalance { get; set; }
+
         public DateTime CreationDateTime { get; set; }
 
         public int CustomerID { get; set; }

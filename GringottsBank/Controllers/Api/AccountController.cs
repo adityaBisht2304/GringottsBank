@@ -45,11 +45,15 @@ namespace GringottsBank.Controllers.Api
 
         [HttpGet]
         [Route("getAllAccounts")]
-        public async Task<IActionResult> GetAllAccounts([FromQuery] int customerId)
+        public async Task<IActionResult> GetAllAccounts([FromQuery] int? customerId)
         {
             try
             {
-                var accounts = await _accountService.GetAllAccounts(customerId);
+                if (customerId == null)
+                {
+                    return NotFound();
+                }
+                var accounts = await _accountService.GetAllAccounts(customerId.Value);
                 var accountsToSend = _mapper.Map<IList<GetAccount>>(accounts);
                 return Ok(accountsToSend);
             }
@@ -69,7 +73,27 @@ namespace GringottsBank.Controllers.Api
                 {
                     return NotFound();
                 }
-                var account = await _accountService.GetAccountByID(id);
+                var account = await _accountService.GetAccountByID(id.Value);
+                var accountToSend = _mapper.Map<GetAccount>(account);
+                return Ok(accountToSend);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("getAccountByNumber/{number}")]
+        public async Task<IActionResult> GetAccountByNumber(long? number)
+        {
+            try
+            {
+                if (number == null)
+                {
+                    return NotFound();
+                }
+                var account = await _accountService.GetAccountByNumber(number.Value);
                 var accountToSend = _mapper.Map<GetAccount>(account);
                 return Ok(accountToSend);
             }
@@ -81,11 +105,15 @@ namespace GringottsBank.Controllers.Api
 
         [HttpDelete]
         [Route("deleteAccount/{id}")]
-        public async Task<IActionResult> DeleteAccount(int id)
+        public async Task<IActionResult> DeleteAccount(int? id)
         {
             try
             {
-                var deletedAccount = await _accountService.DeleteAccount(id);
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var deletedAccount = await _accountService.DeleteAccount(id.Value);
                 var accountToSend = _mapper.Map<GetAccount>(deletedAccount);
                 return Ok(accountToSend);
             }

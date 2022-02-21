@@ -8,9 +8,12 @@ namespace GringottsBank.Services
 {
     public interface ITransactionService
     {
-        Task<Transaction> WithdrawMoney(int amount);
-        Task<Transaction> DepositMoney(int amount);
-        Task<IEnumerable<Transaction>> GetAllTransactions(Account account);
-        Task<IEnumerable<Transaction>> GetAllTransactions(Account account, DateTime fromTime, DateTime toTime);
+        Task<Transaction> WithdrawMoney(Transaction transaction);
+
+        Task<Transaction> DepositMoney(Transaction transaction);
+
+        Task<IEnumerable<Transaction>> GetAllTransactions(int accountID);
+
+        Task<IEnumerable<Transaction>> GetTransactionsInTimePeriod(int accountID, DateTime fromTime, DateTime toTime);
     }
 }

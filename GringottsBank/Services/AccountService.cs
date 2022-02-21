@@ -32,7 +32,6 @@ namespace GringottsBank.Services
                 if (accountToBeCreated == null)
                 {
                     account.AccountNumber = accountNumber;
-                    //TODO: Need to show time according to time zone
                     account.CreationDateTime = DateTime.Now;
                     break;
                 }
@@ -50,7 +49,7 @@ namespace GringottsBank.Services
             byte[] bytes = new byte[8];
             random.NextBytes(bytes);
             bytes[7] = 0;
-            bytes[6] = 127;
+            bytes[6] = 63;
             return BitConverter.ToInt64(bytes, 0);
         }
 
@@ -76,7 +75,7 @@ namespace GringottsBank.Services
             return account;
         }
 
-        public async Task<Account> GetAccountByID(int? id)
+        public async Task<Account> GetAccountByID(int id)
         {
             var account = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.ID == id);
             if (account == null)
@@ -100,6 +99,16 @@ namespace GringottsBank.Services
                 throw new ApplicationException("Accounts do not exist for customer with ID:"  + customerID);
             }
             return accounts;
+        }
+
+        public async Task<Account> GetAccountByNumber(long accountNumber)
+        {
+            var account = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+            if (account == null)
+            {
+                throw new ApplicationException("Account with Number:" + accountNumber + " does not exist");
+            }
+            return account;
         }
 
         public Task<IEnumerable<Account>> GetAccountsByName(string name)

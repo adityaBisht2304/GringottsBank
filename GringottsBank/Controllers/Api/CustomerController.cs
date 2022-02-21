@@ -69,7 +69,7 @@ namespace GringottsBank.Controllers.Api
                 {
                     return NotFound();
                 }
-                var customer = await _customerService.GetCustomerByID(id);
+                var customer = await _customerService.GetCustomerByID(id.Value);
                 var customerToSend = _mapper.Map<GetCustomer>(customer);
                 return Ok(customerToSend);
             }
@@ -142,11 +142,15 @@ namespace GringottsBank.Controllers.Api
 
         [HttpDelete]
         [Route("deleteCustomer/{id}")]
-        public async Task<IActionResult> DeleteCustomer(int id)
+        public async Task<IActionResult> DeleteCustomer(int? id)
         {
             try
             {
-                var deletedCustomer = await _customerService.DeleteCustomer(id);
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var deletedCustomer = await _customerService.DeleteCustomer(id.Value);
                 var customerToSend = _mapper.Map<GetCustomer>(deletedCustomer);
                 return Ok(customerToSend);
             }

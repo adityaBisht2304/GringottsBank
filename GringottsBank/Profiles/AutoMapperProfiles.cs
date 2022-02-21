@@ -15,6 +15,8 @@ namespace GringottsBank.Profiles
             CreateMap<Customer, GetCustomer>();
             CreateMap<RegisterAccount, Account>();
             CreateMap<Account, GetAccount>();
+            CreateMap<NewTransaction, Transaction>();
+            CreateMap<Transaction, GetTransaction>();
         }
     }
 }
