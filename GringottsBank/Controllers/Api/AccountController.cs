@@ -3,6 +3,7 @@ using GringottsBank.Models;
 using GringottsBank.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,15 @@ namespace GringottsBank.Controllers.Api
     {
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(IAccountService accountService, IMapper mapper)
+        public AccountController(IAccountService accountService,
+            IMapper mapper,
+            ILogger<AccountController> logger)
         {
             _accountService = accountService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -30,6 +35,7 @@ namespace GringottsBank.Controllers.Api
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Value provided is not valid" + ModelState.ToString());
                 return BadRequest(newAccount);
             }
             try
@@ -41,6 +47,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -53,6 +60,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (customerId == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var accounts = await _accountService.GetAllAccounts(customerId.Value);
@@ -61,6 +69,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -73,6 +82,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (id == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var account = await _accountService.GetAccountByID(id.Value);
@@ -81,6 +91,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -93,6 +104,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (accountNumber == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var account = await _accountService.GetAccountByNumber(accountNumber.Value);
@@ -101,6 +113,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -113,6 +126,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (id == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var deletedAccount = await _accountService.DeleteAccount(id.Value);
@@ -121,6 +135,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }

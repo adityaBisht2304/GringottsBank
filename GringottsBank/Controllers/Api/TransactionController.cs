@@ -3,6 +3,7 @@ using GringottsBank.Models;
 using GringottsBank.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,15 @@ namespace GringottsBank.Controllers.Api
     {
         private readonly ITransactionService _transactionService;
         private readonly IMapper _mapper;
+        private readonly ILogger<TransactionController> _logger;
 
-        public TransactionController(ITransactionService transactionService, IMapper mapper)
+        public TransactionController(ITransactionService transactionService,
+            IMapper mapper,
+            ILogger<TransactionController> logger)
         {
             _transactionService = transactionService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -30,6 +35,7 @@ namespace GringottsBank.Controllers.Api
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Value provided is not valid" + ModelState.ToString());
                 return BadRequest(newTransaction);
             }
             try
@@ -41,6 +47,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -51,6 +58,7 @@ namespace GringottsBank.Controllers.Api
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Value provided is not valid" + ModelState.ToString());
                 return BadRequest(newTransaction);
             }
             try
@@ -62,6 +70,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -74,6 +83,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (accountId == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var transactions = await _transactionService.GetAllTransactions(accountId.Value);
@@ -82,6 +92,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -94,6 +105,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (accountId == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var transactions = await _transactionService.GetTransactionsInTimePeriod(accountId.Value, fromTime, toTime);
@@ -102,6 +114,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }

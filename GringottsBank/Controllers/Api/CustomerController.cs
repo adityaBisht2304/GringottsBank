@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -27,14 +28,21 @@ namespace GringottsBank.Controllers.Api
         private readonly UserManager<ApplicationCustomer> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<CustomerController> _logger;
 
-        public CustomerController(ICustomerService customerService, UserManager<ApplicationCustomer> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper)
+        public CustomerController(ICustomerService customerService, 
+            UserManager<ApplicationCustomer> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration,
+            IMapper mapper,
+            ILogger<CustomerController> logger)
         {
             _customerService = customerService;
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -43,13 +51,18 @@ namespace GringottsBank.Controllers.Api
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Value provided is not valid" + ModelState.ToString());
                 return BadRequest(newCustomer);
             }
             try
             {
                 var userExists = await _userManager.FindByNameAsync(newCustomer.EmailID);
                 if (userExists != null)
+                {
+                    _logger.LogError("Customer with EmailID : " + newCustomer.EmailID + " exists");
                     return BadRequest("Customer with EmailID : " + newCustomer.EmailID + " exists");
+                }
+                    
 
                 ApplicationCustomer appCustomer = new ApplicationCustomer()
                 {
@@ -61,6 +74,7 @@ namespace GringottsBank.Controllers.Api
                 var result = await _userManager.CreateAsync(appCustomer, newCustomer.Password);
                 if (!result.Succeeded)
                 {
+                    _logger.LogError("User Creation Failed" + result.ToString());
                     return StatusCode(StatusCodes.Status500InternalServerError, "User Creation Failed! Please Try Again");
                 }
 
@@ -78,6 +92,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch(Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -90,13 +105,17 @@ namespace GringottsBank.Controllers.Api
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Value provided is not valid" + ModelState.ToString());
                 return BadRequest(newCustomer);
             }
             try
             {
                 var userExists = await _userManager.FindByNameAsync(newCustomer.EmailID);
                 if (userExists != null)
+                {
+                    _logger.LogError("Customer with EmailID : " + newCustomer.EmailID + " exists");
                     return BadRequest("Customer with EmailID : " + newCustomer.EmailID + " exists");
+                }                    
 
                 ApplicationCustomer appCustomer = new ApplicationCustomer()
                 {
@@ -107,6 +126,7 @@ namespace GringottsBank.Controllers.Api
                 var result = await _userManager.CreateAsync(appCustomer, newCustomer.Password);
                 if (!result.Succeeded)
                 {
+                    _logger.LogError("User Creation Failed" + result.ToString());
                     return StatusCode(StatusCodes.Status500InternalServerError, "User Creation Failed! Please Try Again");
                 }
 
@@ -126,6 +146,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -136,6 +157,7 @@ namespace GringottsBank.Controllers.Api
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Value provided is not valid" + ModelState.ToString());
                 return BadRequest(loginCustomer);
             }
             try
@@ -171,10 +193,12 @@ namespace GringottsBank.Controllers.Api
                         expiration = token.ValidTo
                     });
                 }
+                _logger.LogError("User is unauthorized");
                 return Unauthorized();
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -192,6 +216,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -205,6 +230,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if(id == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var customer = await _customerService.GetCustomerByID(id.Value);
@@ -213,6 +239,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -226,6 +253,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (name == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var customer = await _customerService.GetCustomerByName(name);
@@ -234,6 +262,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -247,6 +276,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (name == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var customers = await _customerService.GetCustomersByName(name);
@@ -255,17 +285,19 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
 
-        [Authorize(Roles = UserRoles.User)]
+        //[Authorize(Roles = UserRoles.User)]
         [HttpPost]
         [Route("update")]
         public async Task<IActionResult> UpdateCustomer([FromBody] RegisterOrUpdateCustomer updateCustomer)
         {
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Value provided is not valid" + ModelState.ToString());
                 return BadRequest(updateCustomer);
             }
             try
@@ -274,11 +306,13 @@ namespace GringottsBank.Controllers.Api
                 var result = await _userManager.RemovePasswordAsync(appCustomer);
                 if (!result.Succeeded)
                 {
+                    _logger.LogError("Old Password Removal Failed" + result.ToString());
                     return StatusCode(StatusCodes.Status500InternalServerError, "Password Updation Failed");
                 }
                 result = await _userManager.AddPasswordAsync(appCustomer, updateCustomer.Password);
                 if (!result.Succeeded)
                 {
+                    _logger.LogError("New Password Update Failed" + result.ToString());
                     return StatusCode(StatusCodes.Status500InternalServerError, "Password Updation Failed");
                 }
                 var customer = _mapper.Map<Customer>(updateCustomer);
@@ -288,6 +322,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -301,6 +336,7 @@ namespace GringottsBank.Controllers.Api
             {
                 if (id == null)
                 {
+                    _logger.LogError("Value provided is null");
                     return NotFound();
                 }
                 var deletedCustomer = await _customerService.DeleteCustomer(id.Value);
@@ -314,6 +350,7 @@ namespace GringottsBank.Controllers.Api
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
                 return BadRequest(e.Message);
             }
         }

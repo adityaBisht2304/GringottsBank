@@ -34,9 +34,7 @@ namespace GringottsBank
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
-
+        { 
             services.AddDbContext<CustomerContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CustomerContext")));
 
             // For Identity  
@@ -104,7 +102,7 @@ namespace GringottsBank
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger)
         {
             if (env.IsDevelopment())
             {
@@ -112,6 +110,9 @@ namespace GringottsBank
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GringottsBank v1"));
             }
+
+            string logPath = "log/" + DateTime.Now.ToString("HHmmss") + ".log";
+            logger.AddFile(logPath);
 
             app.UseHttpsRedirection();
 

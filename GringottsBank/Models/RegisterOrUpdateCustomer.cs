@@ -8,9 +8,6 @@ namespace GringottsBank.Models
 {
     public class RegisterOrUpdateCustomer
     {
-        [Required]
-        public string Name { get; set; }
-
         [EmailAddress]
         [Required]
         public string EmailID { get; set; }
@@ -18,5 +15,8 @@ namespace GringottsBank.Models
         [StringLength(128, MinimumLength = 8)]
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        public string Name { get; set; }
     }
 }
