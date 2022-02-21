@@ -1,4 +1,4 @@
-﻿using GringottsBank.Data;
+﻿using GringottsBank.Authentication;
 using GringottsBank.Models;
 using Microsoft.EntityFrameworkCore;
 using System;

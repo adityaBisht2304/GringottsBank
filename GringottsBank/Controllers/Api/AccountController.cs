@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GringottsBank.Models;
 using GringottsBank.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace GringottsBank.Controllers.Api
 {
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("v1/api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -23,7 +25,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpPost]
-        [Route("createAccount")]
+        [Route("create")]
         public async Task<IActionResult> CreateAccount([FromBody] RegisterAccount newAccount)
         {
             if (!ModelState.IsValid)
@@ -44,7 +46,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpGet]
-        [Route("getAllAccounts")]
+        [Route("get-all")]
         public async Task<IActionResult> GetAllAccounts([FromQuery] int? customerId)
         {
             try
@@ -64,7 +66,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpGet]
-        [Route("getAccountById/{id}")]
+        [Route("get-by-id/{id}")]
         public async Task<IActionResult> GetAccountById(int? id)
         {
             try
@@ -84,16 +86,16 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpGet]
-        [Route("getAccountByNumber/{number}")]
-        public async Task<IActionResult> GetAccountByNumber(long? number)
+        [Route("get-by-account-number/{accountNumber}")]
+        public async Task<IActionResult> GetByAccountNumber(long? accountNumber)
         {
             try
             {
-                if (number == null)
+                if (accountNumber == null)
                 {
                     return NotFound();
                 }
-                var account = await _accountService.GetAccountByNumber(number.Value);
+                var account = await _accountService.GetAccountByNumber(accountNumber.Value);
                 var accountToSend = _mapper.Map<GetAccount>(account);
                 return Ok(accountToSend);
             }
@@ -104,7 +106,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpDelete]
-        [Route("deleteAccount/{id}")]
+        [Route("delete/{id}")]
         public async Task<IActionResult> DeleteAccount(int? id)
         {
             try

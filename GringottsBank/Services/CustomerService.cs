@@ -1,4 +1,4 @@
-﻿using GringottsBank.Data;
+﻿using GringottsBank.Authentication;
 using GringottsBank.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,7 +17,7 @@ namespace GringottsBank.Services
             _dbContext = dbContext;
         }
 
-        public async Task<Customer> CreateCustomer(Customer customer)
+        public async Task<Customer> RegisterCustomer(Customer customer)
         {
             var customerToBeCreated = await _dbContext.Customers.FirstOrDefaultAsync(c => c.EmailID.Equals(customer.EmailID));
             if(customerToBeCreated != null)

@@ -8,7 +8,7 @@ namespace GringottsBank.Services
 {
     public interface ICustomerService
     {
-        Task<Customer> CreateCustomer(Customer customer);
+        Task<Customer> RegisterCustomer(Customer customer);
 
         Task<IEnumerable<Customer>> GetAllCustomers();
 

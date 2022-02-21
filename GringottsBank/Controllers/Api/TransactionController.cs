@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GringottsBank.Models;
 using GringottsBank.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace GringottsBank.Controllers.Api
 {
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("v1/api/[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -23,7 +25,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpPost]
-        [Route("depositMoney")]
+        [Route("deposit-money")]
         public async Task<IActionResult> DepositMoney([FromBody] NewTransaction newTransaction)
         {
             if (!ModelState.IsValid)
@@ -44,7 +46,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpPost]
-        [Route("withdrawMoney")]
+        [Route("withdraw-money")]
         public async Task<IActionResult> WithdrawMoney([FromBody] NewTransaction newTransaction)
         {
             if (!ModelState.IsValid)
@@ -65,7 +67,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpGet]
-        [Route("getAllTransactions")]
+        [Route("get-all-transactions")]
         public async Task<IActionResult> GetAllTransactions([FromQuery] int? accountId)
         {
             try
@@ -85,7 +87,7 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpGet]
-        [Route("getTransactionsInTimePeriod")]
+        [Route("get-transactions-in-time-period")]
         public async Task<IActionResult> GetTransactionsInTimePeriod([FromQuery] int? accountId, [FromQuery] DateTime fromTime, [FromQuery] DateTime toTime)
         {
             try
