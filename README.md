@@ -77,20 +77,56 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
    2. It will get the details of all the customers present in the banking system containing the name keyword
    3. POSTMAN LINK : https://localhost:5001/v1/api/Customer/get-customers-by-name/{name}
    4. Example for (Customer Names - [Harry Potter] and [James Potter]) : https://localhost:5001/v1/api/Customer/get-by-name/Potter
-6. DELETE /v1/api/Customer/delete/{id}
+5. DELETE /v1/api/Customer/delete/{id}
    1. id can not be null and should be provided
    2. POSTMAN LINK : https://localhost:5001/v1/api/Customer/delete/{id}
    3. Example to delete (CustomerID-5) : https://localhost:5001/v1/api/Customer/delete/5
 
 ## Account Endpoint
 1. POST /v1/api/Account/create
+   1. Request body should have {"accountType": 0,"customerID": 0}
+   2. Customer ID is the customer to which we want to associate this account with
+   3. Account Type = 0 for Savings and 1 for Current
+   4. POSTMAN LINK : https://localhost:5001/v1/api/Account/create
 2. GET /v1/api/Account/get-all
+   1. customerID should be passed as a query
+   2. It will get the details of all the accounts present in the banking system for a particular customer
+   3. POSTMAN LINK : https://localhost:5001/v1/api/Account/get-all?customerId={customerId}
+   4. Example for (CustomerID-5) :  https://localhost:5001/v1/api/Account/get-all?customerId=5
 3. GET /v1/api/Account/get-by-id/{id}
+   1. id can not be null and should be provided
+   2. here the id provided is of account for which we want information
+   3. POSTMAN LINK : https://localhost:5001/v1/api/Account/get-by-id/{id}
+   4. Example for (AccountID-5) : https://localhost:5001/v1/api/Account/get-by-id/5
 4. GET /v1/api/Account/get-by-account-number/{accountNumber}
+   1. accountNumber can not be null and should be provided
+   2. here the accountNumber provided is of account for which we want information
+   3. POSTMAN LINK : https://localhost:5001/v1/api/Account/get-by-account-number/{accountNumber}
+   4. Example for (AccountID-17827354129701496) : https://localhost:5001/v1/api/Account/get-by-account-number/17827354129701496
 5. POST /v1/api/Account/delete/{id}
+   1. id can not be null and should be provided
+   2. POSTMAN LINK : https://localhost:5001/v1/api/Account/delete/{id}
+   3. Example to delete (AccountID-5) : https://localhost:5001/v1/api/Account/delete/5
 
 ## Transaction Endpoint
 1. POST /v1/api/Transaction/deposit-money
+   1. Request body should have {"transactionAmount": 0,"accountID": 0}
+   2. Account ID is the account in which we are depositing the money
+   3. POSTMAN LINK : https://localhost:5001/v1/api/Transaction/deposit-money
 2. GET /v1/api/Transaction/withdraw-money
+   1. Request body should have {"transactionAmount": 0,"accountID": 0}
+   2. Account ID is the account from which we are withdrawing the money
+   3. POSTMAN LINK : https://localhost:5001/v1/api/Transaction/withdraw-money
 3. GET /v1/api/Transaction/get-all-transactions
+   1. accountID should be passed as a query
+   2. It will get the details of all the transactions done for a particular account
+   3. POSTMAN LINK : https://localhost:5001/v1/api/Transaction/get-all?accountId={accountId}
+   4. Example for (AccountID-5) :  https://localhost:5001/v1/api/Transaction/get-all?accountId=5
 4. GET /v1/api/Transaction/get-transactions-in-time-period
+   1. accountID, fromTime and toTime should be passed as a query
+   2. This api will get the details of all the transactions done for a particular account in a certain time period
+   3. POSTMAN LINK : https://localhost:5001/v1/api/Transaction/get-transactions-in-time-period?accountId={accountId}&fromTime={fromTime}&toTime={toTime}
+   4. Example for (AccountID-5/ fromTime-2022-02-21T04:34:45 / toTime-2022-02-21T17:18:47) 
+      https://localhost:5001/v1/api/Transaction/get-transactions-in-time-period?accountId=5&fromTime=2022-02-21T04%3A34%3A45&toTime=2022-02-21T17%3A18%3A47
+   5. fromTime should be less than toTime
+   6. Format for editing fromTime or toTime : yyyy-MM-ddTHH:mm:ss which in url transalate to yyyy-MM-ddTHH%3Amm%3Ass
