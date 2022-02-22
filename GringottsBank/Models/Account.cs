@@ -25,8 +25,10 @@ namespace GringottsBank.Models
 
         public int AccountBalance { get; set; }
 
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{yyyy-MM-dd HH:mm:ss}")]
         public DateTime CreationDateTime { get; set; }
 
+        [Required]
         public int CustomerID { get; set; }
 
         public Account()

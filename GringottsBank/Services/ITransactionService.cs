@@ -14,6 +14,8 @@ namespace GringottsBank.Services
 
         Task<IEnumerable<Transaction>> GetAllTransactions(int accountID);
 
-        Task<IEnumerable<Transaction>> GetTransactionsInTimePeriod(int accountID, DateTime fromTime, DateTime toTime);
+        Task<IEnumerable<Transaction>> GetAccountTransactionsInTimePeriod(int accountID, DateTime fromTime, DateTime toTime);
+
+        Task<IEnumerable<Transaction>> GetCustomerTransactionsInTimePeriod(int customerID, DateTime fromTime, DateTime toTime);
     }
 }

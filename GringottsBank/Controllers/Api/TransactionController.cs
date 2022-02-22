@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GringottsBank.Authentication;
 using GringottsBank.Models;
 using GringottsBank.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GringottsBank.Controllers.Api
 {
-    [Authorize]
+    [Authorize(Roles = UserRoles.Admin + "," + UserRoles.User)]
     [Route("v1/api/[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase
@@ -98,8 +99,8 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpGet]
-        [Route("get-transactions-in-time-period")]
-        public async Task<IActionResult> GetTransactionsInTimePeriod([FromQuery] int? accountId, [FromQuery] DateTime fromTime, [FromQuery] DateTime toTime)
+        [Route("get-account-transactions-in-time-period")]
+        public async Task<IActionResult> GetAccountTransactionsInTimePeriod([FromQuery] int? accountId, [FromQuery] DateTime fromTime, [FromQuery] DateTime toTime)
         {
             try
             {
@@ -108,7 +109,30 @@ namespace GringottsBank.Controllers.Api
                     _logger.LogError("Value provided is null");
                     return NotFound();
                 }
-                var transactions = await _transactionService.GetTransactionsInTimePeriod(accountId.Value, fromTime, toTime);
+                var transactions = await _transactionService.GetAccountTransactionsInTimePeriod(accountId.Value, fromTime, toTime);
+                var transactionsToSend = _mapper.Map<IList<GetTransaction>>(transactions);
+                return Ok(transactionsToSend);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-customer-transactions-in-time-period")]
+        public async Task<IActionResult> GetCustomerTransactionsInTimePeriod([FromQuery] int? customerId, [FromQuery] DateTime fromTime, [FromQuery] DateTime toTime)
+        {
+            try
+            {
+                if (customerId == null)
+                {
+                    _logger.LogError("Value provided is null");
+                    return NotFound();
+                }
+
+                var transactions = await _transactionService.GetCustomerTransactionsInTimePeriod(customerId.Value, fromTime, toTime);
                 var transactionsToSend = _mapper.Map<IList<GetTransaction>>(transactions);
                 return Ok(transactionsToSend);
             }

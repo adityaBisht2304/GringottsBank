@@ -78,6 +78,8 @@ namespace GringottsBank.Controllers.Api
                     return StatusCode(StatusCodes.Status500InternalServerError, "User Creation Failed! Please Try Again");
                 }
 
+                if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
+                    await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
                 if (!await _roleManager.RoleExistsAsync(UserRoles.User))
                     await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
 
@@ -220,20 +222,20 @@ namespace GringottsBank.Controllers.Api
                 return BadRequest(e.Message);
             }
         }
-
-        [Authorize]
+        
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.User)]
         [HttpGet]
-        [Route("get-by-id/{id}")]
-        public async Task<IActionResult> GetCustomerById(int? id)
+        [Route("get-by-id/{customerId}")]
+        public async Task<IActionResult> GetCustomerById(int? customerId)
         {
             try
             {
-                if(id == null)
+                if(customerId == null)
                 {
                     _logger.LogError("Value provided is null");
                     return NotFound();
                 }
-                var customer = await _customerService.GetCustomerByID(id.Value);
+                var customer = await _customerService.GetCustomerByID(customerId.Value);
                 var customerToSend = _mapper.Map<GetCustomer>(customer);
                 return Ok(customerToSend);
             }
@@ -244,19 +246,19 @@ namespace GringottsBank.Controllers.Api
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.User)]
         [HttpGet]
-        [Route("get-by-name/{name}")]
-        public async Task<IActionResult> GetByName(string name)
+        [Route("get-by-name/{customerName}")]
+        public async Task<IActionResult> GetByName(string customerName)
         {
             try
             {
-                if (name == null)
+                if (customerName == null)
                 {
                     _logger.LogError("Value provided is null");
                     return NotFound();
                 }
-                var customer = await _customerService.GetCustomerByName(name);
+                var customer = await _customerService.GetCustomerByName(customerName);
                 var customerToSend = _mapper.Map<GetCustomer>(customer);
                 return Ok(customerToSend);
             }
@@ -269,17 +271,17 @@ namespace GringottsBank.Controllers.Api
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpGet]
-        [Route("get-customers-by-name/{name}")]
-        public async Task<IActionResult> GetCustomersByName(string name)
+        [Route("get-customers-by-name/{namePattern}")]
+        public async Task<IActionResult> GetCustomersByName(string namePattern)
         {
             try
             {
-                if (name == null)
+                if (namePattern == null)
                 {
                     _logger.LogError("Value provided is null");
                     return NotFound();
                 }
-                var customers = await _customerService.GetCustomersByName(name);
+                var customers = await _customerService.GetCustomersByName(namePattern);
                 var customersToSend = _mapper.Map<IList<GetCustomer>>(customers);
                 return Ok(customersToSend);
             }
@@ -290,7 +292,7 @@ namespace GringottsBank.Controllers.Api
             }
         }
 
-        //[Authorize(Roles = UserRoles.User)]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.User)]
         [HttpPost]
         [Route("update")]
         public async Task<IActionResult> UpdateCustomer([FromBody] RegisterOrUpdateCustomer updateCustomer)
@@ -329,17 +331,17 @@ namespace GringottsBank.Controllers.Api
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpDelete]
-        [Route("delete/{id}")]
-        public async Task<IActionResult> DeleteCustomer(int? id)
+        [Route("delete/{customerId}")]
+        public async Task<IActionResult> DeleteCustomer(int? customerId)
         {
             try
             {
-                if (id == null)
+                if (customerId == null)
                 {
                     _logger.LogError("Value provided is null");
                     return NotFound();
                 }
-                var deletedCustomer = await _customerService.DeleteCustomer(id.Value);
+                var deletedCustomer = await _customerService.DeleteCustomer(customerId.Value);
                 ApplicationCustomer appCustomer = await _userManager.FindByNameAsync(deletedCustomer.EmailID);
                 if(appCustomer != null)
                 {
