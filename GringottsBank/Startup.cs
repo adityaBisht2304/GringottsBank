@@ -68,6 +68,7 @@ namespace GringottsBank
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddControllers();
 
             services.AddSwaggerGen(swagger =>
@@ -114,8 +115,7 @@ namespace GringottsBank
             string logPath = "log/" + DateTime.Now.ToString("HHmmss") + ".log";
             logger.AddFile(logPath);
 
-            app.UseHttpsRedirection();
-
+            app.UseHttpsRedirection();            
             app.UseRouting();
 
             app.UseAuthentication();
