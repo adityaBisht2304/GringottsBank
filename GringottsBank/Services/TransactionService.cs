@@ -78,7 +78,7 @@ namespace GringottsBank.Services
             return transactions;
         }
 
-        public async Task<IEnumerable<Transaction>> GetTransactionsInTimePeriod(int accountID, DateTime fromTime, DateTime toTime)
+        public async Task<IEnumerable<Transaction>> GetAccountTransactionsInTimePeriod(int accountID, DateTime fromTime, DateTime toTime)
         {
             var account = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.ID == accountID);
             if (account == null)
@@ -93,6 +93,35 @@ namespace GringottsBank.Services
             {
                 throw new ApplicationException("Transactions do not exist for account with ID:" + accountID);
             }
+            return transactions;
+        }
+
+        public async Task<IEnumerable<Transaction>> GetCustomerTransactionsInTimePeriod(int customerID, DateTime fromTime, DateTime toTime)
+        {
+            var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.ID == customerID);
+            if (customer == null)
+            {
+                throw new ApplicationException("Customer with ID:" + customerID + " does not exist");
+            }
+
+            var accounts = await _dbContext.Accounts.Where(x => x.CustomerID == customerID).ToListAsync();
+            if (accounts == null || accounts.Count == 0)
+            {
+                throw new ApplicationException("Accounts do not exist for customer with ID:" + customerID);
+            }
+            
+            if (fromTime.Ticks > toTime.Ticks)
+            {
+                throw new ApplicationException("From Time can not be greater than To Time");
+            }
+
+            List<Transaction> transactions = new List<Transaction>(); ;
+            foreach(var account in accounts)
+            {
+                var tempTransactions = await _dbContext.Transactions.Where(t => t.AccountID == account.ID).Where(t => t.TransactionDateTime >= fromTime).Where(t => t.TransactionDateTime <= toTime).ToListAsync();
+                transactions.AddRange(tempTransactions);
+            }
+
             return transactions;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GringottsBank.Authentication;
 using GringottsBank.Models;
 using GringottsBank.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GringottsBank.Controllers.Api
 {
-    [Authorize]
+    [Authorize(Roles = UserRoles.Admin + "," + UserRoles.User)]
     [Route("v1/api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
@@ -75,17 +76,17 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpGet]
-        [Route("get-by-id/{id}")]
-        public async Task<IActionResult> GetAccountById(int? id)
+        [Route("get-by-id/{accountId}")]
+        public async Task<IActionResult> GetAccountById(int? accountId)
         {
             try
             {
-                if (id == null)
+                if (accountId == null)
                 {
                     _logger.LogError("Value provided is null");
                     return NotFound();
                 }
-                var account = await _accountService.GetAccountByID(id.Value);
+                var account = await _accountService.GetAccountByID(accountId.Value);
                 var accountToSend = _mapper.Map<GetAccount>(account);
                 return Ok(accountToSend);
             }
@@ -119,17 +120,17 @@ namespace GringottsBank.Controllers.Api
         }
 
         [HttpDelete]
-        [Route("delete/{id}")]
-        public async Task<IActionResult> DeleteAccount(int? id)
+        [Route("delete/{accountId}")]
+        public async Task<IActionResult> DeleteAccount(int? accountId)
         {
             try
             {
-                if (id == null)
+                if (accountId == null)
                 {
                     _logger.LogError("Value provided is null");
                     return NotFound();
                 }
-                var deletedAccount = await _accountService.DeleteAccount(id.Value);
+                var deletedAccount = await _accountService.DeleteAccount(accountId.Value);
                 var accountToSend = _mapper.Map<GetAccount>(deletedAccount);
                 return Ok(accountToSend);
             }
