@@ -50,11 +50,11 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
    3. Token will be generated in the response body
    4. POSTMAN LINK : https://localhost:5001/v1/api/customer/login
 3. GET /v1/api/customer/get-by-id/{customerId}
-   1. id can not be null and should be provided
+   1. customerId can not be null and should be provided
    2. POSTMAN LINK : https://localhost:5001/v1/api/customer/get-by-id/{customerId}
    3. Example for (customerID-5) : https://localhost:5001/v1/api/customer/get-by-id/5
 4. GET /v1/api/customer/get-by-name/{customerName}
-   1. name can not be null and should be provided
+   1. customerName can not be null and should be provided
    2. POSTMAN LINK : https://localhost:5001/v1/api/customer/get-by-name/{customerName}
    3. Example for (customerName - Harry Potter) : https://localhost:5001/v1/api/customer/get-by-name/Harry%20Potter
 6. POST /v1/api/customer/update
@@ -74,12 +74,12 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
    1. It will get the details of all the customers present in the banking system
    2. POSTMAN LINK : https://localhost:5001/v1/api/customer/get-all
 4. GET /v1/api/customer/get-customers-by-name/{namePattern}
-   1. name can not be null and should be provided
-   2. It will get the details of all the customers present in the banking system containing the name keyword
+   1. namePattern can not be null and should be provided
+   2. It will get the details of all the customers present in the banking system containing the namePattern keyword
    3. POSTMAN LINK : https://localhost:5001/v1/api/customer/get-customers-by-name/{namePattern}
    4. Example for (Customer Names - [Harry Potter] and [James Potter]) : https://localhost:5001/v1/api/customer/get-customers-by-name/Potter
 5. DELETE /v1/api/customer/delete/{customerId}
-   1. id can not be null and should be provided
+   1. customerId can not be null and should be provided
    2. POSTMAN LINK : https://localhost:5001/v1/api/customer/delete/{customerId}
    3. Example to delete (customerID-5) : https://localhost:5001/v1/api/customer/delete/5
 
@@ -95,7 +95,7 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
    3. POSTMAN LINK : https://localhost:5001/v1/api/account/get-all?customerId={customerId}
    4. Example for (customerID-5) :  https://localhost:5001/v1/api/account/get-all?customerId=5
 3. GET /v1/api/account/get-by-id/{accountId}
-   1. id can not be null and should be provided
+   1. accountId can not be null and should be provided
    2. here the id provided is of account for which we want information
    3. POSTMAN LINK : https://localhost:5001/v1/api/account/get-by-id/{accountId}
    4. Example for (accountID-5) : https://localhost:5001/v1/api/account/get-by-id/5
@@ -105,7 +105,7 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
    3. POSTMAN LINK : https://localhost:5001/v1/api/account/get-by-account-number/{accountNumber}
    4. Example for (accountID-1782) : https://localhost:5001/v1/api/account/get-by-account-number/1782
 5. POST /v1/api/account/delete/{accountId}
-   1. id can not be null and should be provided
+   1. accountId can not be null and should be provided
    2. POSTMAN LINK : https://localhost:5001/v1/api/account/delete/{accountId}
    3. Example to delete (accountID-5) : https://localhost:5001/v1/api/account/delete/5
 
