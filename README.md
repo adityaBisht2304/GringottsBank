@@ -109,7 +109,7 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
    2. POSTMAN LINK : https://localhost:5001/v1/api/account/delete/{accountId}
    3. Example to delete (accountID-5) : https://localhost:5001/v1/api/account/delete/5
 
-## transaction Endpoint
+## Transaction Endpoint
 1. POST /v1/api/transaction/deposit-money
    1. Request body should have {"transactionAmount": 0,"accountID": 0}
    2. account ID is the account in which we are depositing the money
