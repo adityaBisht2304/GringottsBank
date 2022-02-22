@@ -4,8 +4,9 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
 # Access Instructions
 1. Make clone of this repository by using command "git clone https://github.com/adityaBisht2304/GringottsBank.git". It will copy the code in a local folder.
 2. Go to folder "RepositoryLocalFolderPath/GringottsBank/" and open "GringottsBank.sln" in Visual Studio 2019
-3. Build the solution and run GringottsBank.exe from path "ReositoryLocalFolderPath/GringottsBank/bin/Debug/net5.0"
-4. It will open up the Swagger UI(https://localhost:5001/swagger/index.html) with all the REST APIs available. Run the following APIs in sequence for authentication
+3. Open package manager console and type 2 commands "add-migration NewMigration" and then do "update-database"
+4. Build the solution and run GringottsBank.exe from path "ReositoryLocalFolderPath/GringottsBank/bin/Debug/net5.0"
+5. It will open up the Swagger UI(https://localhost:5001/swagger/index.html) with all the REST APIs available. Run the following APIs in sequence for authentication
    1. POST /v1/api/Customer/register 
       1. Provide Request Body correctly
    2. POST /v1/api/Customer/login 
@@ -15,7 +16,7 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
       1. Type "Bearer abc" or in other words "Bearer TokenNumberGenerated"
       2. No double quotes are to be put
    4. The authentication done in above steps will ensure only the authorized user can access the APIs
-5. We can also run the APis from Postman for registration and authentication
+6. We can also run the APis from Postman for registration and authentication
    1. POST https://localhost:5001/v1/api/Customer/register 
       1. Provide Request Body correctly
    2. POST https://localhost:5001/v1/api/Customer/login
@@ -23,7 +24,7 @@ Gringotts Bank is a bank that has an online branch for wizards to do some accoun
       2. Copy the token generated - Let's say "abc"
    3. Go to Authorization Section and select the Bearer token type and paste the token
    4. Now we can use all those APIs which do not require admin access
-6. For admin access from Swagger UI(https://localhost:5001/swagger/index.html)
+7. For admin access from Swagger UI(https://localhost:5001/swagger/index.html)
    1. POST /v1/api/Customer/register-admin
       1. Provide Request Body correctly
    2. POST /v1/api/Customer/login 
